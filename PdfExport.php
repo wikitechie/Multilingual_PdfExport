@@ -4,10 +4,10 @@ if ( !defined( 'MEDIAWIKI' ) )
  
 $wgExtensionCredits['specialpage'][] = array(
         'name' => 'PdfExport',
-        'author' => array( 'Thomas Hempel', '...' ),
-        'version' => '2.4.2 (2011-02-23)',
-        'description' => 'renders a page as pdf',
-        'url' => 'http://www.mediawiki.org/wiki/Extension:Pdf_Export'
+        'author' => array( 'Thomas Hempel', 'Anas Al-Mahdy', 'Muhammad Al-Syrwan' ),
+        'version' => '0.1 (2011-10-4)',
+        'description' => 'renders a page as pdf using TCPDF class',
+        'url' => 'http://www.mediawiki.org/wiki/Extension:Multilingual_Pdf_Export'
 );
  
 $dir = dirname(__FILE__) . '/';
