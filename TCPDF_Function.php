@@ -24,8 +24,18 @@ function OutputPdf($name,$body){
     $pdf->AddPage();
     $pdf->setRTL(true);
     
-    $pdf->addTTFfont(dirname(__FILE__).'/tcpdf/arial.ttf','TrueTypeUnicode','',32);
-    $pdf->SetFont('arial', '', 10);
+    // set some language dependent data:
+    $lg = Array();
+    $lg['a_meta_charset'] = 'UTF-8';
+    $lg['a_meta_dir'] = 'rtl';
+    $lg['a_meta_language'] = 'fa';
+    $lg['w_page'] = 'page';
+    
+    //set some language-dependent strings
+    $pdf->setLanguageArray($lg);
+    //$pdf->addTTFfont(dirname(__FILE__).'/tcpdf/ae_Furat.ttf','TrueType','',32);
+    $pdf->SetFont('aefurat'  , '', 10);
+
     
     $htmlcontent = $body;
     
