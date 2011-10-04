@@ -1,8 +1,8 @@
 <?php
 function OutputPdf($name,$body){
     
-    require_once(dirname(__FILE__).'tcpdf/config/lang/eng.php');
-    require_once(dirname(__FILE__).'tcpdf/tcpdf.php');
+    require_once(dirname(__FILE__).'/tcpdf/config/lang/eng.php');
+    require_once(dirname(__FILE__).'/tcpdf/tcpdf.php');
     
     $pdf = new TCPDF();
     
