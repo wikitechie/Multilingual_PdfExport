@@ -33,7 +33,7 @@ function OutputPdf($name,$body){
     
     //set some language-dependent strings
     $pdf->setLanguageArray($lg);
-    //$pdf->addTTFfont(dirname(__FILE__).'/tcpdf/ae_Furat.ttf','TrueType','',32);
+    $pdf->addTTFfont(dirname(__FILE__).'/tcpdf/ae_Furat.ttf','TrueType','',32);
     $pdf->SetFont('aefurat'  , '', 10);
 
     

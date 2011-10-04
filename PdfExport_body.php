@@ -98,46 +98,68 @@ class SpecialPdf extends SpecialPage {
                         $pagefiles[] = $f;
                 }
                 if ($foundone == false)   return;
- 
-                putenv("HTMLDOC_NOCGI=1");
- 
-                # <Craig>
-         global $PdfExportUseHtmlDoc;
-                if($PdfExportUseHtmlDoc == true && is_executable('htmldoc')){
-                        # Run HTMLDOC to provide the PDF file to the user...
-                 passthru("htmldoc -t pdf14 --charset iso-8859-15 --color --quiet --jpeg --size " . $size . " " . $landscape . "--webpage " . $pagestring, $returnStatus);
-                        if($returnStatus == 1)
-                                error_log("Generating PDF failed. Return status was:" . $returnStatus, 0);
-                }
-                else{
-                	// USING TCPDF lib
-                        $PdfContent = '';
-                        foreach ($pagefiles as &$pagefile){
-                                $PdfContent .= file_get_contents($pagefile);
-                                #TODO should we put splitter <hr>
-                        }
-                        // force utf-8
-                        $PdfContent = str_replace('<head>','<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>',$PdfContent);
-                        $PdfContent = str_replace('</head>','<style type="text/css">body{padding:10px 10px 35px;}</style></head>',$PdfContent); // Insert styling to make room for header/footer.
-                        $orientation = stristr($landscape,'landscape') ? 'landscape' : 'portrait';
-                        
-                        //cleaning html
-                        $config = array(
-                                   'indent'         => true,
-                                   'output-xhtml'   => true,
-                                   'wrap'           => 200);
-						
-                        $tidy = new tidy();
-                        $PdfContent = $tidy->repairString($PdfContent, $config ,'utf8');
-						include('TCPDF_Function.php');
-						OutputPdf('doc.pdf',$PdfContent);
-                }
-                # </Craig>
-         flush();
-                foreach ($pagefiles as $pgf) {
-                        unlink ($pgf);
-                }
-        }
+                
+				$PdfContent = '';
+				foreach ($pagefiles as &$pagefile){
+					$PdfContent .= file_get_contents($pagefile);
+					#TODO should we put splitter <hr>
+				}
+				//force utf-8
+				$PdfContent = str_replace('<head>','<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>',$PdfContent);
+				$PdfContent = str_replace('</head>','<style type="text/css">body{padding:10px 10px 35px;}</style></head>',$PdfContent); // Insert styling to make room for header/footer.
+				$orientation = stristr($landscape,'landscape') ? 'landscape' : 'portrait';
+				
+				//cleaning html
+				$config = array(
+					'indent'         => true,
+					'output-xhtml'   => true,
+					'wrap'           => 200);
+				$tidy = new tidy();
+				$PdfContent = $tidy->repairString($PdfContent, $config ,'utf8');
+				
+				// some defaults
+				$defaultFont = 'aefurat';
+				$headerTemplate = "no text yet";
+				//USING TCPDF lib
+				require_once(dirname(__FILE__).'/tcpdf/config/lang/ara.php');
+				#TODO replace this with real wikilanguage
+				require_once(dirname(__FILE__).'/tcpdf/tcpdf.php');
+				
+				$pdf = new TCPDF();
+				global $wgLogo;
+				$pdf->setHeaderData("../../../../../.." . $wgLogo, 30, $pagestring.'', $headerTemplate);
+				
+				$pdf->setHeaderFont(Array($defaultFont, '', PDF_FONT_SIZE_MAIN));
+				$pdf->setFooterFont(Array($defaultFont, '', PDF_FONT_SIZE_DATA));
+				
+				$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+				
+				$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+				$pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+				$pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+				
+				$pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+				
+				$pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+				// ---------------------------------------------------------
+				$pdf->AddPage();
+				$pdf->setRTL(true);
+				
+
+				// set some language-dependent strings ($l is defined in language include above)
+				$pdf->setLanguageArray($l);
+				//$pdf->addTTFfont(dirname(__FILE__).'/tcpdf/ae_Furat.ttf','TrueType','',32);
+				$pdf->SetFont('aefurat'  , '', 10);
+				
+				$pdf->WriteHTML($PdfContent, true, 0, true, 0);
+				
+				$pdf->Output("doc", 'I');
+				#TODO replace this with a book name
+				flush();
+				foreach ($pagefiles as $pgf) {
+					unlink ($pgf);
+				}
+		}        
  
         function execute( $par ) {
                 global $wgRequest;
