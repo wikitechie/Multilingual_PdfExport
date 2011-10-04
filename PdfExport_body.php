@@ -101,12 +101,6 @@ class SpecialPdf extends SpecialPage {
  
                 putenv("HTMLDOC_NOCGI=1");
  
-                # Write the content type to the client...
-         header("Content-Type: application/pdf");
-
-                if ($wgPdfExportAttach)
-                        header(sprintf('Content-Disposition: attachment; filename="%s.pdf"', $page));
-                #TODO remove the header lines above 
                 # <Craig>
          global $PdfExportUseHtmlDoc;
                 if($PdfExportUseHtmlDoc == true && is_executable('htmldoc')){
