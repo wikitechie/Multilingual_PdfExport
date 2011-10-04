@@ -130,14 +130,6 @@ class SpecialPdf extends SpecialPage {
 						#TODO include TCPDF library
 			include('TCPDF_Function.php');
 			OutputPdf('doc.pdf',$PdfContent);
-			/*
-                        $domPDF = new DOMPDF();
-                        $domPDF->set_base_path(realpath(dirname(__FILE__)).'/tmp');
-                        $domPDF->set_paper(mb_strtolower($size), mb_strtolower($orientation));
-                        $domPDF->load_html($PdfContent);
-                        $domPDF->render();
-                        $domPDF->stream(utf8_decode('jh') . ".pdf", array('Attachment'=>0));
-                        */
                 }
                 # </Craig>
          flush();
