@@ -24,7 +24,7 @@ function OutputPdf($name,$body){
     $pdf->AddPage();
     $pdf->setRTL(true);
     
-    $pdf->addTTFfont('arial.ttf','TrueTypeUnicode','',32);
+    $pdf->addTTFfont(dirname(__FILE__).'/arial.ttf','TrueTypeUnicode','',32);
     $pdf->SetFont('arial', '', 10);
     
     $htmlcontent = $body;
