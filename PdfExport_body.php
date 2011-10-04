@@ -103,10 +103,10 @@ class SpecialPdf extends SpecialPage {
  
                 # Write the content type to the client...
          header("Content-Type: application/pdf");
- 
+
                 if ($wgPdfExportAttach)
                         header(sprintf('Content-Disposition: attachment; filename="%s.pdf"', $page));
- 
+                #TODO remove the header lines above 
                 # <Craig>
          global $PdfExportUseHtmlDoc;
                 if($PdfExportUseHtmlDoc == true && is_executable('htmldoc')){
@@ -116,20 +116,18 @@ class SpecialPdf extends SpecialPage {
                                 error_log("Generating PDF failed. Return status was:" . $returnStatus, 0);
                 }
                 else{
+                	// USING TCPDF lib
                         $PdfContent = '';
                         foreach ($pagefiles as &$pagefile){
                                 $PdfContent .= file_get_contents($pagefile);
+                                #TODO should we put splitter <hr>
                         }
-                        //Note: Create PdfExport_headfoot.php if necessary (it can be blank).
-                        $PdfHeaderFooter = '<script type="text/php">include_once("'.realpath(dirname(__FILE__)).'/PdfExport_headfoot.php");</script>';  
-                        $PdfContent = str_replace('</body></html>',$PdfHeaderFooter.'</body></html>',$PdfContent); // Insert inline header/footer script.
+                        // force utf-8
                         $PdfContent = str_replace('<head>','<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>',$PdfContent);
                         $PdfContent = str_replace('</head>','<style type="text/css">body{padding:10px 10px 35px;}</style></head>',$PdfContent); // Insert styling to make room for header/footer.
                         $orientation = stristr($landscape,'landscape') ? 'landscape' : 'portrait';
-                        // Required API for alternative method.
-                        // Download here: http://www.digitaljunkies.ca/dompdf/downloads.php
-                        require_once( realpath(dirname(__FILE__)) . "/dompdf/dompdf_config.inc.php" );
-                        spl_autoload_register( 'DOMPDF_autoload' );
+                        
+						#TODO include TCPDF library
                         $domPDF = new DOMPDF();
                         $domPDF->set_base_path(realpath(dirname(__FILE__)).'/tmp');
                         $domPDF->set_paper(mb_strtolower($size), mb_strtolower($orientation));
