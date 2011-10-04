@@ -1,14 +1,4 @@
 <?php
-
-if(isset($_POST['body']))OutputPdf('doc.pdf',$_POST['body']);
-else echo '
-<form method="post">
-    <textarea wrap="OFF" name="body" cols="100" rows="25"></textarea>
-    <input type="submit" />
-</form>
-';
-
-
 function OutputPdf($name,$body){
     
     require_once('tcpdf/config/lang/eng.php');
