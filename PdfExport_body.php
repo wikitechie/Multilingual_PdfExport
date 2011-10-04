@@ -121,9 +121,16 @@ class SpecialPdf extends SpecialPage {
                         $PdfContent = str_replace('</head>','<style type="text/css">body{padding:10px 10px 35px;}</style></head>',$PdfContent); // Insert styling to make room for header/footer.
                         $orientation = stristr($landscape,'landscape') ? 'landscape' : 'portrait';
                         
-						#TODO include TCPDF library
-			include('TCPDF_Function.php');
-			OutputPdf('doc.pdf',$PdfContent);
+                        //cleaning html
+                        $config = array(
+                                   'indent'         => true,
+                                   'output-xhtml'   => true,
+                                   'wrap'           => 200);
+						
+                        $tidy = new tidy();
+                        $PdfContent = $tidy->repairString($PdfContent, $config ,'utf8');
+						include('TCPDF_Function.php');
+						OutputPdf('doc.pdf',$PdfContent);
                 }
                 # </Craig>
          flush();
